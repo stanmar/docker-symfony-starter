@@ -1,0 +1,73 @@
+version: '2'
+
+services:
+  app:
+    build: docker/symfony
+    user: developer
+    volumes:
+      - ./app:/home/developer/app
+      - ./logs/dev:/home/developer/logs
+      - ./docker/symfony/dev.env:/home/developer/.env
+    env_file:
+      - docker/symfony/dev.env
+
+    networks:
+      default:
+        ipv4_address: 172.16.2.2
+    hostname: app
+
+  nginx:
+    build: docker/nginx
+    user: developer
+    volumes:
+      - ./app/public:/home/developer/app/public
+      - ./logs/dev:/home/developer/logs
+    networks:
+      default:
+        ipv4_address: 172.16.2.3
+    hostname: nginx
+    ports:
+      - "172.16.2.1:80:1080"
+      - "172.16.2.1:443:1443"
+
+    # wait when php-fpm container becomes available and then start nginx. It's better then "depends_on"
+    command: >
+      sh -c "./wait.sh -c 'nc -z app 9000' && nginx -g 'daemon off;'"
+
+  mysql:
+    image: mysql
+    env_file:
+      - ./docker/mysql/dev.env
+    volumes:
+      - ./docker/mysql/data:/var/lib/mysql
+    entrypoint: ['docker-entrypoint.sh', '--default-authentication-plugin=mysql_native_password']
+
+    networks:
+      default:
+        ipv4_address: 172.16.2.4
+    hostname: mysql
+    ports:
+      - "172.16.2.1:3306:3306"
+
+
+  yarn:
+    image: node:9-stretch
+    user: node
+    entrypoint: yarn
+    volumes:
+      - ./app:/home/node/app
+    working_dir: /home/node/app
+    networks:
+      default:
+        ipv4_address: 172.16.2.5
+
+
+# With fixed subnets you can run multiple projects on same host and same time
+# and you will never have a collision with ports
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.2.0/24

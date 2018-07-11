@@ -1,0 +1,4 @@
+.idea
+logs/**/*log
+!.gitignore
+docker/mysql/data
