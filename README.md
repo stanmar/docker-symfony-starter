@@ -2,14 +2,12 @@
 
 1. docker
 2. docker-compose
-3. Ubuntu (others os not tested)
 
-
-##### Generate new symfony project using composer
+##### Generate new symfony demo project using composer
 ```
 rm -rf app
 mkdir app
-docker-compose run --rm app composer create-project symfony/skeleton /home/developer/app
+docker-compose run --rm app composer create-project symfony/symfony-demo /home/developer/app
 ```
 
 ##### Start
@@ -17,31 +15,28 @@ docker-compose run --rm app composer create-project symfony/skeleton /home/devel
 docker-compose up -d
 ```
 
-and browse your site at http://172.16.2.1
+##### Generate assets
 
+```
+docker-compose run --rm yarn run build 
+```
 
-##### Shutdown 
+##### Initialize database
+```
+docker-compose exec app bin/console doctrine:schema:update
+```
+
+##### Browse
+```
+http://172.16.2.1
+```
+##### Stop
+
 ```
 docker-compose down
 ```
 
-##### How to use php composer 
 
-```
-docker-compose run --rm app composer
-```
-or if project is running
-```
-docker-compose exec app composer
-```
 
-##### How to use symfony bin/console
 
-```
-docker-compose run --rm app bin/console
-```
-or if project is running
-```
-docker-compose exec app bin/console
-```
 
