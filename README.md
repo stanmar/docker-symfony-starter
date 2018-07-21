@@ -1,5 +1,4 @@
 ##### Requirements
-
 1. docker
 2. docker-compose
 
@@ -16,22 +15,21 @@ docker-compose up -d
 ```
 
 ##### Generate assets
-
 ```
 docker-compose run --rm yarn run build 
 ```
 
 ##### Initialize database
 ```
-docker-compose exec app bin/console doctrine:schema:update
+docker-compose exec app bin/console doctrine:schema:update --force
 ```
 
 ##### Browse
 ```
 http://172.16.2.1
 ```
-##### Stop
 
+##### Stop
 ```
 docker-compose down
 ```
