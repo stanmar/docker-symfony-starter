@@ -54,6 +54,7 @@ services:
     image: node:9-stretch
     user: node
     entrypoint: yarn
+    command: "-v"
     volumes:
       - ./app:/home/node/app
     working_dir: /home/node/app
