@@ -63,7 +63,7 @@ services:
         ipv4_address: 172.16.2.5
 
 
-# With fixed subnets you can run multiple projects on same host and same time
+# With constant subnets you can run multiple projects on same host and same time
 # and you will never have a collision with ports
 networks:
   default:
